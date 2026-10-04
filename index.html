@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Lab Test</title>
+<style>
+  body { font-family: monospace; background:#111; color:#ddd; padding:20px; }
+  a { color:#6cf; }
+  .box { border:1px solid #333; padding:15px; margin:10px 0; border-radius:6px; }
+  input, textarea, button { background:#222; color:#eee; border:1px solid #444; padding:6px; margin:4px 0; }
+  button { cursor:pointer; }
+  h2 { color:#f90; }
+</style>
+</head>
+<body>
+
+<h1>Lab Test Page</h1>
+
+<div class="box">
+  <h2>1. Login</h2>
+  <form onsubmit="event.preventDefault(); doLogin();">
+    Username: <input id="u"><br>
+    Password: <input id="p" type="password"><br>
+    <button>Login</button>
+  </form>
+  <pre id="loginOut"></pre>
+</div>
+
+<div class="box">
+  <h2>2. Search</h2>
+  <form onsubmit="event.preventDefault(); doSearch();">
+    Cari: <input id="q"><button>Cari</button>
+  </form>
+  <pre id="searchOut"></pre>
+</div>
+
+<div class="box">
+  <h2>3. Profile</h2>
+  <form onsubmit="event.preventDefault(); doProfile();">
+    ID: <input id="pid" value="1"><button>Lihat</button>
+  </form>
+  <pre id="profileOut"></pre>
+</div>
+
+<div class="box">
+  <h2>4. Include</h2>
+  <a href="#" onclick="doInclude('home');return false;">?page=home</a> |
+  <a href="#" onclick="doInclude('about');return false;">?page=about</a> |
+  <a href="#" onclick="doInclude('contact');return false;">?page=contact</a>
+  <pre id="includeOut"></pre>
+</div>
+
+<div class="box">
+  <h2>5. Upload</h2>
+  <form onsubmit="event.preventDefault(); doUpload();">
+    <input type="file" id="file"><button>Upload</button>
+  </form>
+  <pre id="uploadOut"></pre>
+</div>
+
+<div class="box">
+  <h2>6. Comment</h2>
+  <form onsubmit="event.preventDefault(); doComment();">
+    <textarea id="c" rows="3" cols="40"></textarea><br>
+    <button>Kirim</button>
+  </form>
+  <div id="commentList"></div>
+</div>
+
+<div class="box">
+  <h2>7. Redirect</h2>
+  <form onsubmit="event.preventDefault(); doRedirect();">
+    URL: <input id="redir" value="home.html"><button>Go</button>
+  </form>
+  <pre id="redirOut"></pre>
+</div>
+
+<script>
+function doLogin(){
+  const u = document.getElementById('u').value;
+  const p = document.getElementById('p').value;
+  document.getElementById('loginOut').textContent =
+    "SELECT * FROM users WHERE username='"+u+"' AND password='"+p+"'";
+}
+
+function doSearch(){
+  const q = document.getElementById('q').value;
+  document.getElementById('searchOut').textContent =
+    "SELECT id, name, price FROM products WHERE name LIKE '%"+q+"%'";
+}
+
+function doProfile(){
+  const id = document.getElementById('pid').value;
+  document.getElementById('profileOut').textContent =
+    "SELECT username, email, bio FROM users WHERE id="+id;
+}
+
+function doInclude(page){
+  document.getElementById('includeOut').textContent =
+    "include('"+page+".php');";
+}
+
+function doUpload(){
+  const f = document.getElementById('file').files[0];
+  if(!f){ document.getElementById('uploadOut').textContent = "Pilih file dulu."; return; }
+  document.getElementById('uploadOut').textContent =
+    "move_uploaded_file($_FILES['file']['tmp_name'], 'uploads/"+f.name+"');";
+}
+
+function doComment(){
+  const c = document.getElementById('c').value;
+  const div = document.createElement('div');
+  div.innerHTML = c;
+  document.getElementById('commentList').appendChild(div);
+  document.getElementById('c').value = "";
+}
+
+function doRedirect(){
+  const u = document.getElementById('redir').value;
+  document.getElementById('redirOut').textContent = "header('Location: "+u+"');";
+}
+</script>
+
+</body>
+</html>
